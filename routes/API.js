@@ -5,11 +5,11 @@ const Employees = require("../models/Employee");
 router.post("/api/add/Employees", ({ body }, res) => {
   Employees.create(body)
     .then(dbEmployees => {
-      console.log("herehere"+dbEmployees);
+      console.log("here:"+dbEmployees);
       res.json(dbEmployees);
     })
     .catch(err => {
-      console.log("therethere"+err);
+      console.log("the:"+err);
       res.status(400).json(err);
     });
 });
