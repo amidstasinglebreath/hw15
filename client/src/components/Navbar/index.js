@@ -10,7 +10,7 @@ function Navbar({ modalShow, setModalShow, loadPage }) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <span className="navbar-brand">
-        Trilogy Edu:
+        Trilogy Edu.
       </span>
       <div className="ml-auto">
         <Button variant="primary" onClick={() => setModalShow(true)}>

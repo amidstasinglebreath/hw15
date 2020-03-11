@@ -1,58 +1,73 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "../../components/Container";
-import Col from "../../components/Col";
-import Row from "../../components/Row";
+import SearchForm from "../../components/SearchForm";
+import SearchResults from "../../components/SearchResults";
+import Alert from "../../components/Alert";
+import ArticleContext from "../../utils/ArticleContext";
+import API from "../../utils/API";
+import useDebounce from "../../utils/debounceHook";
 
-function Signup() {
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+function Search() {
+  const [articleState, setArticleState] = useState({
+    title: "",
+    description: "",
+    url: ""
+  });
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    console.log("username is " + username);
-    console.log("password is " + password);
+  const [search, setSearch] = useState("Wikipedia");
+  const [error, setError] = useState("");
+
+  const debouncedSearchTerm = useDebounce(search, 500);
+
+  useEffect(() => {
+    document.title = "Wikipedia Searcher";
+    if (!search) {
+      return;
+    }
+    if (debouncedSearchTerm) {
+      API.searchTerms(debouncedSearchTerm)
+        .then(res => {
+          if (res.data.length === 0) {
+            throw new Error("No results found.");
+          }
+          if (res.data.status === "error") {
+            throw new Error(res.data.message);
+          }
+          setArticleState({
+            title: res.data[1],
+            description: res.data[2][0],
+            url: res.data[3][0]
+          });
+        })
+        .catch(err => setError(err));
+    }
+  }, [debouncedSearchTerm]);
+
+  const handleInputChange = event => {
+    setSearch(event.target.value);
   };
 
-  return (
-    <div>
-      <div className="mt-4">
-        <h2>Welcome to Wikipedia Searcher!</h2>
+  const handleFormSubmit = event => {
+    event.preventDefault();
+  };
+  return (  
+    <ArticleContext.Provider value={articleState}>
+      <div>
+        <Container style={{ minHeight: "100vh" }}>
+          <h1 className="text-center">Search an Employee</h1>
+          <Alert type="danger" style={{ opacity: error ? 1 : 0, marginBottom: 10 }}>
+            {error}
+          </Alert>
+          <SearchForm
+            handleFormSubmit={handleFormSubmit}
+            handleInputChange={handleInputChange}
+            results={search}
+          />
+          <SearchResults />
+        </Container>
       </div>
-      <form onSubmit={handleSubmit}>
-        <Container className="mt-3 px-5">
-          <Row className="form-group">
-            <Col size="12">
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Username"
-                name="username"
-                onChange={e => setUsername(e.target.value)}
-              />
-            </Col>
-          </Row>
-          <Row className="form-group">
-            <Col size="12">
-              <input
-                className="form-control"
-                type="password"
-                placeholder="Password"
-                name="password"
-                onChange={e => setPassword(e.target.value)}
-              />
-            </Col>
-          </Row>
-          <button className="btn btn-success" type="submit">
-            Submit
-          </button>
-        </Container>
-        <Container className="mt-4">
-          <h3>Hello {username}!</h3>
-          <p>I probably shouldn't tell you this, but your password is {password}!</p>
-        </Container>
-      </form>
-    </div>
+    </ArticleContext.Provider>
   );
 }
 
-export default Signup;
+export default Search;

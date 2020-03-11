@@ -89,7 +89,7 @@ function App() {
       setData({
         search: data.search,
         category: data.category,
-        error:"Please Enter A Valid Query."
+        error:"Please Enter A Valid Query!!!"
       });
       return;
     }
@@ -100,7 +100,7 @@ function App() {
       setData({
         search: data.search,
         category: data.category,
-        error:"No Relevant Data Found!"
+        error:"No Relevant Data Found!!!"
       });
       return;
     }

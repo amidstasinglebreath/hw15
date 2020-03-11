@@ -1,3 +1,4 @@
+
 table {
     margin:0 auto 20px auto;
     border-spacing: 0;
@@ -16,16 +17,4 @@ td {
 th:last-child,
 td:last-child { 
     border-right: 0;
-}
-
-.titleNav {
-    color: darkblue;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 4em;
-    text-align: center;
-    background: lightcyan;
-}
-
-#root {
-    background: lightcyan;
 }
